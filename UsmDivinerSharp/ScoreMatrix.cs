@@ -2,17 +2,11 @@ using System.Buffers;
 
 namespace UsmDivinerSharp;
 
-sealed class ScoreMatrix : IDisposable
+readonly struct ScoreMatrix() : IDisposable
 {
-    public int[] Buffer { get; private set; } = ArrayPool<int>.Shared.Rent(65536 * 32);
-    public ref int Unigram(int y, int x) => ref Buffer[y * 256 + x];
-    public ref int Bigram(int y, int x) => ref Buffer[y * 65536 + x + 65536];
+    private readonly int[] _buffer = ArrayPool<int>.Shared.Rent(65536 * 32);
+    public ref int Unigram(int y, int x) => ref _buffer[y * 256 + x]; // real size: 256*32
+    public ref int Bigram(int y, int x) => ref _buffer[y * 65536 + x + 65536]; // real size: 65536*31
     public void Dispose()
-    {
-        if (Buffer is not null)
-        {
-            ArrayPool<int>.Shared.Return(Buffer, true);
-            Buffer = null!;
-        }
-    }
+        => ArrayPool<int>.Shared.Return(_buffer);
 }
