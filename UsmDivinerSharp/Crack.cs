@@ -83,7 +83,7 @@ public static class Crack
     }
     static Candidate[] ExtendLevel1(ScoreMatrix matrix, int beam, ref readonly BigramWeights bigramWeights, PlainVm1Constraints knownVm1)
     {
-        using LightweightArrayPoolHandler<Candidate> @out = new(65536);
+        using PooledArray<Candidate> @out = new(65536);
         int count = 0;
         for (int vx = 0; vx < 65536; vx++)
         {
@@ -118,7 +118,7 @@ public static class Crack
     static Candidate[] ExtendLevel<T>(scoped ReadOnlySpan<Candidate> candidates, ScoreMatrix matrix, int beam, ref readonly BigramWeights bigramWeights, PlainVm1Constraints knownVm1)
         where T : IExtendLevel
     {
-        using LightweightArrayPoolHandler<Candidate> @out = new(256 * candidates.Length);
+        using PooledArray<Candidate> @out = new(256 * candidates.Length);
         int count = 0;
         foreach (Candidate candidate in candidates)
         {
